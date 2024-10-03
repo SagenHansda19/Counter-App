@@ -26,16 +26,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.counterapp.ui.theme.CounterAppTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val viewModel : CounterViewModel = viewModel()
             CounterAppTheme {
                 Scaffold (modifier = Modifier.fillMaxSize()) { innerPadding->
                     //innerPadding -> to provide default padding
-                    TheCounterApp(innerPadding)
+                    TheCounterApp(innerPadding, viewModel)
                 }
             }
         }
@@ -47,16 +49,16 @@ fun TheCounterApp(
     //innerPadding -> inbuilt attribute
     //PaddingValues -> stores default values
 
-    innerPadding : PaddingValues
+    innerPadding : PaddingValues,
+    viewModel: CounterViewModel
 ) {
-    val count = remember { mutableStateOf(0) }
 
     fun increment () {
-        count.value++;
+        viewModel.count.value++;
     }
     
     fun decrement () {
-        count.value--;
+        viewModel.count.value--;
     }
     //column -> vertical arrangement
     Column (
@@ -65,7 +67,7 @@ fun TheCounterApp(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // $ -> to fetch value
-        Text(text = "Count : ${count.value}",
+        Text(text = "Count : ${viewModel.count.value}",
             fontSize = 24.sp, 
             fontWeight = FontWeight.Bold
         )
